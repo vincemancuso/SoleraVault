@@ -60,29 +60,63 @@ cp .env.example .env
 
 Set `DATABASE_URL` to a PostgreSQL database URL. `OPENAI_API_KEY` is optional.
 
-3. Create the database tables:
+For the default local setup, use:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/soleravault?schema=public"
+OPENAI_API_KEY=""
+```
+
+3. Start PostgreSQL:
+
+```bash
+npm run db:start
+```
+
+This uses Docker Compose and exposes Postgres on `localhost:5432`.
+
+4. Create the database tables:
 
 ```bash
 npm run prisma:migrate
 ```
 
-4. Seed common spirits:
+5. Seed common spirits:
 
 ```bash
 npm run prisma:seed
 ```
 
-5. Run the dev server:
+6. Run the dev server:
 
 ```bash
 npm run dev
 ```
 
-6. Run tests:
+Open `http://localhost:3000`.
+
+7. Run tests:
 
 ```bash
 npm test
 ```
+
+### Database troubleshooting
+
+If you see `Can't reach database server at localhost:5432`, the app is running but PostgreSQL is not reachable. Start it with:
+
+```bash
+npm run db:start
+```
+
+Then run migrations and seed data:
+
+```bash
+npm run prisma:migrate
+npm run prisma:seed
+```
+
+If port `5432` is already in use, either stop the other Postgres service or change the left side of the Docker Compose port mapping, then update `DATABASE_URL` to match.
 
 ## Optional OpenAI lookup
 
