@@ -1,0 +1,18 @@
+<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="220" rx="28" fill="#F7EFE2"/>
+  <g opacity="0.32" stroke="#A85D32" stroke-width="3" fill="none">
+    <path d="M112 33c-40 10-65 42-65 83 0 43 31 77 73 77 35 0 61-23 61-56 0-28-21-49-49-49-24 0-41 16-41 37 0 17 12 30 29 30 13 0 23-9 23-21"/>
+    <path d="M119 49c-31 8-51 34-51 67 0 34 24 61 58 61 28 0 48-18 48-43 0-22-17-38-39-38-18 0-31 12-31 28 0 13 9 22 21 22"/>
+    <path d="M124 66c-21 7-35 26-35 50 0 24 18 43 41 43 19 0 32-12 32-29 0-15-11-26-26-26-12 0-20 8-20 19"/>
+  </g>
+  <g transform="translate(106 24)">
+    <path d="M43 18h34l6 39c18 12 30 34 30 59v50c0 17-14 30-30 30H37c-17 0-30-13-30-30v-50c0-25 12-47 30-59l6-39Z" fill="#FFF8EC" stroke="#2A1810" stroke-width="6"/>
+    <path d="M43 18h34v22H43z" fill="#3B2417"/>
+    <path d="M25 123c23-23 47-23 70 0 6 6 13 10 18 12v31c0 17-14 30-30 30H37c-17 0-30-13-30-30v-31c6-2 12-6 18-12Z" fill="#C47A2C"/>
+    <path d="M31 126c18-18 38-18 56 0 13 13 27 13 44 0" stroke="#F1C16B" stroke-width="7" stroke-linecap="round"/>
+    <path d="M37 151c16 16 31 16 47 0 17-17 34-17 50 0" stroke="#8F4F25" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+  </g>
+  <text x="255" y="93" fill="#2A1810" font-family="Georgia, serif" font-size="56" font-weight="700">SoleraVault</text>
+  <text x="258" y="134" fill="#6F6258" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Track. Blend. Drink. Share.</text>
+  <path d="M260 160h300" stroke="#D8A24A" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  ADD
+  REMOVE
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  displayName String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bottles Bottle[]
+  spirits Spirit[] @relation("CreatedSpirits")
+}
+
+model Bottle {
+  id             String    @id @default(cuid())
+  userId         String
+  name           String
+  description    String?
+  targetVolumeMl Float
+  archivedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions BottleTransaction[]
+  components   BottleComponent[]
+  snapshots    BottleSnapshot[]
+
+  @@index([userId])
+}
+
+model Spirit {
+  id                  String   @id @default(cuid())
+  canonicalName       String   @unique
+  displayName         String
+  brand               String?
+  producer            String?
+  category            String
+  country             String?
+  region              String?
+  abvPercent          Float
+  proof               Float
+  ageYears            Float?
+  cornPct             Float?
+  ryePct              Float?
+  wheatPct            Float?
+  maltedBarleyPct     Float?
+  otherGrainPct       Float?
+  mashBillConfidence  Float?
+  mashBillNotes       String?
+  dataSource          String?
+  sourceConfidence    Float?
+  userVerified        Boolean  @default(false)
+  createdByUserId     String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  createdBy    User?                 @relation("CreatedSpirits", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  flavor       SpiritFlavorProfile?
+  transactions BottleTransaction[]
+  components   BottleComponent[]
+
+  @@index([category])
+}
+
+model SpiritFlavorProfile {
+  id       String @id @default(cuid())
+  spiritId String @unique
+  sweet    Float  @default(0)
+  vanilla  Float  @default(0)
+  caramel  Float  @default(0)
+  oak      Float  @default(0)
+  spice    Float  @default(0)
+  fruit    Float  @default(0)
+  smoke    Float  @default(0)
+  peat     Float  @default(0)
+  nutty    Float  @default(0)
+  floral   Float  @default(0)
+
+  spirit Spirit @relation(fields: [spiritId], references: [id], onDelete: Cascade)
+}
+
+model BottleTransaction {
+  id              String          @id @default(cuid())
+  bottleId        String
+  transactionType TransactionType
+  spiritId        String?
+  amountMl        Float
+  transactionTime DateTime
+  notes           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  bottle   Bottle           @relation(fields: [bottleId], references: [id], onDelete: Cascade)
+  spirit   Spirit?          @relation(fields: [spiritId], references: [id], onDelete: Restrict)
+  snapshot BottleSnapshot?
+
+  @@index([bottleId, transactionTime])
+}
+
+model BottleComponent {
+  id                 String @id @default(cuid())
+  bottleId           String
+  spiritId           String
+  remainingVolumeMl  Float
+  remainingEthanolMl Float
+
+  bottle Bottle @relation(fields: [bottleId], references: [id], onDelete: Cascade)
+  spirit Spirit @relation(fields: [spiritId], references: [id], onDelete: Restrict)
+
+  @@unique([bottleId, spiritId])
+}
+
+model BottleSnapshot {
+  id                     String   @id @default(cuid())
+  bottleId               String
+  transactionId          String   @unique
+  snapshotTime           DateTime
+  totalVolumeMl          Float
+  totalEthanolMl         Float
+  abvPercent             Float
+  proof                  Float
+  componentBreakdownJson Json
+  categoryBreakdownJson  Json
+  mashBillJson           Json
+  flavorProfileJson      Json
+
+  bottle      Bottle            @relation(fields: [bottleId], references: [id], onDelete: Cascade)
+  transaction BottleTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([bottleId, snapshotTime])
+}
