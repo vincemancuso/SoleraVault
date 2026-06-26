@@ -14,8 +14,10 @@ An infinity bottle is a bottle where you continually add varying amounts of spir
 - Multiple bottles per user.
 - Create, edit, archive, and delete bottles.
 - Manual spirit database with proof, category, mash bill estimates, and flavor profile fields.
+- "My Bar" view for liquors you own and use in blends.
+- Open Food Facts barcode lookup for draft product metadata.
 - Add spirits to a bottle and remove pours in oz or ml.
-- Edit or delete transactions, then replay the ledger.
+- Edit bar bottles or delete transactions, then replay affected ledgers.
 - Derived current bottle state: volume, ABV, proof, contributors, category mix, mash bill estimate, flavor profile, and snapshots.
 - Dashboard visualizations: custom SVG bottle composition, Recharts radar/bar/history charts, and proof summary.
 - Seed data for common whiskeys.
@@ -146,6 +148,15 @@ If `OPENAI_API_KEY` is unset, SoleraVault hides or disables AI assistance and co
 If `OPENAI_API_KEY` is set, the lookup service in `src/lib/openaiSpiritLookup.ts` can request structured draft metadata for a user-entered spirit name. AI-created metadata should be treated as a draft, not authoritative truth. Users should review and edit proof, category, mash bill, flavor profile, confidence, and warnings before saving. AI-suggested records should use `dataSource = "openai_suggested"`, `userVerified = false`, and a confidence score from the response.
 
 The prompt explicitly asks the model not to invent exact mash bills. If proof varies by batch or the bottle is ambiguous, the response should include warnings and lower confidence.
+
+## Product data sources
+
+SoleraVault uses source data conservatively:
+
+- **[Open Food Facts](https://openfoodfacts.github.io/openfoodfacts-server/api/)** is the first open-data product lookup target. Barcode imports are treated as draft metadata because product fields are crowd-sourced and may be incomplete.
+- **[Kaggle](https://www.kaggle.com/datasets)** whiskey datasets may help with future enrichment, but licenses and provenance must be reviewed before bundling data into the app.
+- **[TTB distilled spirits data](https://www.ttb.gov/statistics)** is useful for official aggregate industry context, but it is not a bottle-level lookup source.
+- **Distiller and similar sites** can be useful research references only. Do not scrape or bundle their data unless they provide a permitted API or license.
 
 ## Tech stack
 

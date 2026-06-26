@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { TransactionType } from "@prisma/client";
+import { Prisma, TransactionType } from "@prisma/client";
 import { getOrCreateDefaultUser } from "@/lib/defaultUser";
 import { lookupSpiritWithOpenAI } from "@/lib/openaiSpiritLookup";
 import { prisma } from "@/lib/prisma";
@@ -70,48 +70,48 @@ export async function deleteBottle(bottleId: string) {
 
 export async function createSpirit(formData: FormData) {
   const user = await getOrCreateDefaultUser();
-  const abvPercent = numberFromForm(formData, "abvPercent");
   const spirit = await prisma.spirit.create({
     data: {
-      canonicalName: stringFromForm(formData, "canonicalName") || stringFromForm(formData, "displayName").toLowerCase(),
-      displayName: stringFromForm(formData, "displayName"),
-      brand: stringFromForm(formData, "brand") || null,
-      producer: stringFromForm(formData, "producer") || null,
-      category: stringFromForm(formData, "category") || "Whiskey",
-      country: stringFromForm(formData, "country") || null,
-      region: stringFromForm(formData, "region") || null,
-      abvPercent,
-      proof: abvPercent * 2,
-      ageYears: nullableNumberFromForm(formData, "ageYears"),
-      cornPct: nullableNumberFromForm(formData, "cornPct"),
-      ryePct: nullableNumberFromForm(formData, "ryePct"),
-      wheatPct: nullableNumberFromForm(formData, "wheatPct"),
-      maltedBarleyPct: nullableNumberFromForm(formData, "maltedBarleyPct"),
-      otherGrainPct: nullableNumberFromForm(formData, "otherGrainPct"),
-      mashBillConfidence: nullableNumberFromForm(formData, "mashBillConfidence"),
-      mashBillNotes: stringFromForm(formData, "mashBillNotes") || null,
-      dataSource: stringFromForm(formData, "dataSource") || "manual",
-      sourceConfidence: nullableNumberFromForm(formData, "sourceConfidence"),
+      ...spiritDataFromForm(formData),
       userVerified: formData.get("userVerified") === "on",
       createdByUserId: user.id,
       flavor: {
-        create: {
-          sweet: numberFromForm(formData, "sweet"),
-          vanilla: numberFromForm(formData, "vanilla"),
-          caramel: numberFromForm(formData, "caramel"),
-          oak: numberFromForm(formData, "oak"),
-          spice: numberFromForm(formData, "spice"),
-          fruit: numberFromForm(formData, "fruit"),
-          smoke: numberFromForm(formData, "smoke"),
-          peat: numberFromForm(formData, "peat"),
-          nutty: numberFromForm(formData, "nutty"),
-          floral: numberFromForm(formData, "floral")
-        }
+        create: flavorDataFromForm(formData)
       }
     }
   });
   revalidatePath("/spirits");
   redirect(`/spirits?created=${spirit.id}`);
+}
+
+export async function updateSpirit(spiritId: string, formData: FormData) {
+  await prisma.spirit.update({
+    where: { id: spiritId },
+    data: {
+      ...spiritDataFromForm(formData),
+      userVerified: formData.get("userVerified") === "on",
+      flavor: {
+        upsert: {
+          create: flavorDataFromForm(formData),
+          update: flavorDataFromForm(formData)
+        }
+      }
+    }
+  });
+
+  const affectedBottles = await prisma.bottleTransaction.findMany({
+    where: { spiritId },
+    distinct: ["bottleId"],
+    select: { bottleId: true }
+  });
+
+  for (const bottle of affectedBottles) {
+    await replayBottle(bottle.bottleId);
+    revalidatePath(`/bottles/${bottle.bottleId}`);
+  }
+
+  revalidatePath("/spirits");
+  redirect("/spirits");
 }
 
 export async function addBottleTransaction(bottleId: string, formData: FormData) {
@@ -174,4 +174,45 @@ export async function updateTransaction(bottleId: string, transactionId: string,
 export async function aiLookupSpirit(formData: FormData) {
   const draft = await lookupSpiritWithOpenAI(stringFromForm(formData, "lookupName"));
   return draft;
+}
+
+function spiritDataFromForm(formData: FormData): Prisma.SpiritUncheckedCreateInput {
+  const displayName = stringFromForm(formData, "displayName");
+  const abvPercent = numberFromForm(formData, "abvPercent");
+  return {
+    canonicalName: stringFromForm(formData, "canonicalName") || displayName.toLowerCase(),
+    displayName,
+    brand: stringFromForm(formData, "brand") || null,
+    producer: stringFromForm(formData, "producer") || null,
+    category: stringFromForm(formData, "category") || "Whiskey",
+    country: stringFromForm(formData, "country") || null,
+    region: stringFromForm(formData, "region") || null,
+    abvPercent,
+    proof: abvPercent * 2,
+    ageYears: nullableNumberFromForm(formData, "ageYears"),
+    cornPct: nullableNumberFromForm(formData, "cornPct"),
+    ryePct: nullableNumberFromForm(formData, "ryePct"),
+    wheatPct: nullableNumberFromForm(formData, "wheatPct"),
+    maltedBarleyPct: nullableNumberFromForm(formData, "maltedBarleyPct"),
+    otherGrainPct: nullableNumberFromForm(formData, "otherGrainPct"),
+    mashBillConfidence: nullableNumberFromForm(formData, "mashBillConfidence"),
+    mashBillNotes: stringFromForm(formData, "mashBillNotes") || null,
+    dataSource: stringFromForm(formData, "dataSource") || "manual",
+    sourceConfidence: nullableNumberFromForm(formData, "sourceConfidence")
+  };
+}
+
+function flavorDataFromForm(formData: FormData): Prisma.SpiritFlavorProfileCreateWithoutSpiritInput {
+  return {
+    sweet: numberFromForm(formData, "sweet"),
+    vanilla: numberFromForm(formData, "vanilla"),
+    caramel: numberFromForm(formData, "caramel"),
+    oak: numberFromForm(formData, "oak"),
+    spice: numberFromForm(formData, "spice"),
+    fruit: numberFromForm(formData, "fruit"),
+    smoke: numberFromForm(formData, "smoke"),
+    peat: numberFromForm(formData, "peat"),
+    nutty: numberFromForm(formData, "nutty"),
+    floral: numberFromForm(formData, "floral")
+  };
 }

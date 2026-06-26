@@ -8,7 +8,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Logo />
         <nav className="flex items-center gap-2 text-sm font-bold text-oak">
           <Link className="button-secondary" href="/">Bottles</Link>
-          <Link className="button-secondary" href="/spirits">Spirits</Link>
+          <Link className="button-secondary" href="/spirits">My Bar</Link>
         </nav>
       </header>
       {children}

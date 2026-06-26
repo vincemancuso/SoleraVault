@@ -28,7 +28,7 @@ export default async function AddSpiritPage({ params }: { params: Promise<{ id: 
           <label>Notes<textarea name="notes" rows={3} placeholder="Bottle kill, tasting context, batch note..." /></label>
           <div className="flex flex-wrap gap-3">
             <button className="button-primary" type="submit">Save add</button>
-            <Link className="button-secondary" href="/spirits/new">Create spirit</Link>
+            <Link className="button-secondary" href="/spirits/new">Add to My Bar</Link>
             <Link className="button-secondary" href={`/bottles/${bottle.id}`}>Cancel</Link>
           </div>
         </form>

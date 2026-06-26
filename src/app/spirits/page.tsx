@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Edit, Plus } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { prisma } from "@/lib/prisma";
 
@@ -16,10 +16,10 @@ export default async function SpiritsPage() {
       <main className="space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-4xl font-black text-barrel">Spirit database</h1>
-            <p className="mt-2 font-semibold text-smoke">Local spirits for adds, with draft metadata you can review and refine.</p>
+            <h1 className="font-display text-4xl font-black text-barrel">My Bar</h1>
+            <p className="mt-2 font-semibold text-smoke">Liquors you own and can add to your infinity bottles, with metadata you can review and refine.</p>
           </div>
-          <Link href="/spirits/new" className="button-primary"><Plus size={17} /> New spirit</Link>
+          <Link href="/spirits/new" className="button-primary"><Plus size={17} /> Add bottle</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {spirits.map((spirit) => (
@@ -34,6 +34,7 @@ export default async function SpiritsPage() {
               <p className="mt-4 text-sm font-semibold text-smoke">
                 Source: {spirit.dataSource ?? "manual"} {spirit.userVerified ? "- verified" : "- draft"}
               </p>
+              <Link href={`/spirits/${spirit.id}/edit`} className="button-secondary mt-5 w-full"><Edit size={16} /> Edit</Link>
             </div>
           ))}
         </div>
