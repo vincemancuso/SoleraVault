@@ -2,14 +2,16 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { randomBytes } from "node:crypto";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dataDir = join(root, ".postgres-data");
 const passwordFile = join(root, ".postgres-pwfile");
+const appPasswordFile = join(dataDir, ".app-password");
 const port = "55432";
 const dbName = "soleravault";
 const user = "postgres";
-const password = "postgres";
+const password = getOrCreatePassword();
 const databaseUrl = `postgresql://${user}:${password}@localhost:${port}/${dbName}?schema=public`;
 
 function run(command, args, options = {}) {
@@ -43,6 +45,46 @@ function ensureEnv() {
     lines.push('OPENAI_API_KEY=""');
   }
   writeFileSync(envPath, `${lines.join("\n")}\n`);
+}
+
+function getOrCreatePassword() {
+  if (existsSync(appPasswordFile)) {
+    return readFileSync(appPasswordFile, "utf8").trim();
+  }
+
+  const envPassword = readPasswordFromEnv();
+  if (envPassword) {
+    mkdirSync(dataDir, { recursive: true });
+    writeFileSync(appPasswordFile, `${envPassword}\n`, { mode: 0o600 });
+    return envPassword;
+  }
+
+  if (existsSync(join(dataDir, "PG_VERSION"))) {
+    console.error("Existing local Postgres data was found, but no local password could be read from .env or .postgres-data/.app-password.");
+    console.error("Run with the existing .env file present, or stop the server and recreate .postgres-data if you want a fresh local database.");
+    process.exit(1);
+  }
+
+  const generatedPassword = randomBytes(24).toString("base64url");
+  mkdirSync(dataDir, { recursive: true });
+  writeFileSync(appPasswordFile, `${generatedPassword}\n`, { mode: 0o600 });
+  return generatedPassword;
+}
+
+function readPasswordFromEnv() {
+  const envPath = join(root, ".env");
+  if (!existsSync(envPath)) return null;
+  const match = readFileSync(envPath, "utf8").match(/^DATABASE_URL=(?:"([^"]+)"|'([^']+)'|(.+))$/m);
+  const rawUrl = match?.[1] ?? match?.[2] ?? match?.[3];
+  if (!rawUrl) return null;
+
+  try {
+    const url = new URL(rawUrl);
+    if (url.hostname !== "localhost" || url.port !== port || url.username !== user) return null;
+    return decodeURIComponent(url.password);
+  } catch {
+    return null;
+  }
 }
 
 function init() {

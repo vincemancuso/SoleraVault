@@ -17,10 +17,12 @@ export function BottleComposition({ components }: { components: ComponentBreakdo
       <svg viewBox="0 0 180 360" role="img" aria-label="Conceptual bottle composition visualization" className="mx-auto h-80 w-48">
         <defs>
           <clipPath id="bottleClip">
-            <path d="M68 18h44l8 78c24 18 38 48 38 82v120c0 25-20 45-45 45H67c-25 0-45-20-45-45V178c0-34 14-64 38-82l8-78Z" />
+            <path d="M66 20h48v36l-10 20v42c28 8 48 34 48 65v122c0 22-18 40-40 40H68c-22 0-40-18-40-40V183c0-31 20-57 48-65V76L66 56V20Z" />
           </clipPath>
         </defs>
-        <path d="M68 18h44l8 78c24 18 38 48 38 82v120c0 25-20 45-45 45H67c-25 0-45-20-45-45V178c0-34 14-64 38-82l8-78Z" fill="#FFFFFF" stroke="#1F2A33" strokeWidth="8" />
+        <path d="M66 20h48v36l-10 20v42c28 8 48 34 48 65v122c0 22-18 40-40 40H68c-22 0-40-18-40-40V183c0-31 20-57 48-65V76L66 56V20Z" fill="#FFFFFF" stroke="#1F2A33" strokeWidth="8" strokeLinejoin="round" />
+        <rect x="66" y="20" width="48" height="22" rx="5" fill="#1F2A33" />
+        <rect x="74" y="56" width="32" height="10" rx="2" fill="#F2B24A" />
         <g clipPath="url(#bottleClip)">
           <rect x="0" y="0" width="180" height="360" fill="#FFFFFF" />
           {displayLayers.map((component, index) => {
@@ -33,8 +35,6 @@ export function BottleComposition({ components }: { components: ComponentBreakdo
               </rect>
             );
           })}
-          <path d="M36 230c35-34 70-34 105 0" stroke="#F2B24A" strokeWidth="9" strokeLinecap="round" opacity="0.78" />
-          <path d="M36 258c35 34 70 34 105 0" stroke="#1F2A33" strokeWidth="9" strokeLinecap="round" opacity="0.28" />
         </g>
       </svg>
       <div className="space-y-3">

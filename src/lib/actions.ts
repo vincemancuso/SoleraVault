@@ -114,6 +114,17 @@ export async function updateSpirit(spiritId: string, formData: FormData) {
   redirect("/spirits");
 }
 
+export async function deleteSpirit(spiritId: string) {
+  const transactionCount = await prisma.bottleTransaction.count({ where: { spiritId } });
+  if (transactionCount > 0) {
+    redirect("/spirits?removeError=used");
+  }
+
+  await prisma.spirit.delete({ where: { id: spiritId } });
+  revalidatePath("/spirits");
+  redirect("/spirits");
+}
+
 export async function addBottleTransaction(bottleId: string, formData: FormData) {
   const unit = (formData.get("unit") as VolumeUnit) || "ml";
   await prisma.bottleTransaction.create({

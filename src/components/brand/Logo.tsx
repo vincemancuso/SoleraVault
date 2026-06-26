@@ -3,18 +3,18 @@ import Link from "next/link";
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-3">
+    <Link href="/" className="flex items-center gap-4">
       <Image
         src="/brand/soleravault-app-icon.png"
         alt=""
-        width={compact ? 44 : 56}
-        height={compact ? 44 : 56}
-        className="h-12 w-12 rounded-xl object-contain sm:h-14 sm:w-14"
+        width={compact ? 56 : 76}
+        height={compact ? 56 : 76}
+        className="h-14 w-14 rounded-2xl object-contain sm:h-20 sm:w-20"
         priority
       />
       <span className="grid leading-none">
-        <span className="font-display text-xl font-black text-charcoal sm:text-2xl">SoleraVault</span>
-        <span className="mt-1 hidden text-[0.62rem] font-black uppercase tracking-[0.22em] text-amber sm:block">
+        <span className="font-display text-3xl font-black text-charcoal sm:text-4xl">SoleraVault</span>
+        <span className="mt-2 hidden text-[0.72rem] font-black uppercase tracking-[0.24em] text-amber sm:block">
           Track. Blend. Drink. Share.
         </span>
       </span>

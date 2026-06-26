@@ -1,11 +1,10 @@
 import Link from "next/link";
 import type { Spirit, SpiritFlavorProfile } from "@prisma/client";
 import { flavorDimensions, type FlavorProfile } from "@/lib/flavorModel";
-import type { OpenFoodFactsSpiritDraft } from "@/lib/openFoodFacts";
 import type { SpiritLookupDraft } from "@/lib/openaiSpiritLookup";
 
 type SpiritWithFlavor = Spirit & { flavor: SpiritFlavorProfile | null };
-type SpiritFormDraft = (OpenFoodFactsSpiritDraft | (SpiritLookupDraft & { dataSource?: "openai_suggested" })) & {
+type SpiritFormDraft = (SpiritLookupDraft & { dataSource?: "openai_suggested" }) & {
   dataSource?: string;
   ageYears?: number | null;
   cornPct?: number | null;
@@ -21,9 +20,11 @@ type SpiritFormProps = {
   mode: "create" | "edit";
   spirit?: SpiritWithFlavor;
   draft?: SpiritFormDraft | null;
+  aiCompletionEnabled?: boolean;
+  aiCompletionPath?: string;
 };
 
-export function SpiritForm({ action, mode, spirit, draft }: SpiritFormProps) {
+export function SpiritForm({ action, mode, spirit, draft, aiCompletionEnabled = false, aiCompletionPath }: SpiritFormProps) {
   const flavor = draft?.flavor ?? spirit?.flavor ?? {};
   const sourceConfidence = draft?.sourceConfidence ?? spirit?.sourceConfidence ?? undefined;
 
@@ -38,7 +39,14 @@ export function SpiritForm({ action, mode, spirit, draft }: SpiritFormProps) {
         </div>
       ) : null}
       <div className="grid gap-4 md:grid-cols-2">
-        <label>Display name<input name="displayName" required defaultValue={draft?.displayName ?? spirit?.displayName ?? ""} placeholder="Wild Turkey 101 Bourbon" /></label>
+        <div className="grid gap-2">
+          <label>Display name<input name="displayName" required defaultValue={draft?.displayName ?? spirit?.displayName ?? ""} placeholder="Wild Turkey 101 Bourbon" /></label>
+          {aiCompletionEnabled && aiCompletionPath ? (
+            <button className="button-secondary w-fit" type="submit" formAction={aiCompletionPath} formMethod="get">
+              Complete with AI
+            </button>
+          ) : null}
+        </div>
         <label>Canonical name<input name="canonicalName" defaultValue={draft?.canonicalName ?? spirit?.canonicalName ?? ""} placeholder="wild turkey 101 bourbon" /></label>
         <label>Brand<input name="brand" defaultValue={draft?.brand ?? spirit?.brand ?? ""} /></label>
         <label>Producer<input name="producer" defaultValue={draft?.producer ?? spirit?.producer ?? ""} /></label>

@@ -22,14 +22,7 @@ export default async function HomePage() {
   return (
     <AppShell>
       <main className="space-y-8">
-        <section className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div>
-            <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-copper">Track. Blend. Drink. Share.</p>
-            <h1 className="font-display text-5xl font-black text-barrel sm:text-6xl">SoleraVault</h1>
-            <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-smoke">
-              A premium whiskey journal and analytics dashboard for tracking the living history of your infinity bottles.
-            </p>
-          </div>
+        <section className="flex justify-end">
           <Link href="/bottles/new" className="button-primary">
             <Plus size={18} /> New bottle
           </Link>
