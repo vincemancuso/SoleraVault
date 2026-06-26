@@ -2,14 +2,25 @@ import Link from "next/link";
 import type { Spirit, SpiritFlavorProfile } from "@prisma/client";
 import { flavorDimensions, type FlavorProfile } from "@/lib/flavorModel";
 import type { OpenFoodFactsSpiritDraft } from "@/lib/openFoodFacts";
+import type { SpiritLookupDraft } from "@/lib/openaiSpiritLookup";
 
 type SpiritWithFlavor = Spirit & { flavor: SpiritFlavorProfile | null };
+type SpiritFormDraft = (OpenFoodFactsSpiritDraft | (SpiritLookupDraft & { dataSource?: "openai_suggested" })) & {
+  dataSource?: string;
+  ageYears?: number | null;
+  cornPct?: number | null;
+  ryePct?: number | null;
+  wheatPct?: number | null;
+  maltedBarleyPct?: number | null;
+  otherGrainPct?: number | null;
+  mashBillConfidence?: number | null;
+};
 
 type SpiritFormProps = {
   action: (formData: FormData) => void | Promise<void>;
   mode: "create" | "edit";
   spirit?: SpiritWithFlavor;
-  draft?: OpenFoodFactsSpiritDraft | null;
+  draft?: SpiritFormDraft | null;
 };
 
 export function SpiritForm({ action, mode, spirit, draft }: SpiritFormProps) {
@@ -35,18 +46,18 @@ export function SpiritForm({ action, mode, spirit, draft }: SpiritFormProps) {
         <label>Country<input name="country" defaultValue={draft?.country ?? spirit?.country ?? "United States"} /></label>
         <label>Region<input name="region" defaultValue={draft?.region ?? spirit?.region ?? ""} /></label>
         <label>ABV percent<input name="abvPercent" type="number" min="0.1" max="95" step="0.1" required defaultValue={draft?.abvPercent ?? spirit?.abvPercent ?? 50} /></label>
-        <label>Age years<input name="ageYears" type="number" min="0" step="0.1" defaultValue={spirit?.ageYears ?? ""} /></label>
+        <label>Age years<input name="ageYears" type="number" min="0" step="0.1" defaultValue={draft?.ageYears ?? spirit?.ageYears ?? ""} /></label>
       </div>
       <fieldset className="grid gap-4 md:grid-cols-5">
         <legend className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-smoke">Mash bill estimate</legend>
-        <label>Corn %<input name="cornPct" type="number" min="0" max="100" step="0.1" defaultValue={spirit?.cornPct ?? ""} /></label>
-        <label>Rye %<input name="ryePct" type="number" min="0" max="100" step="0.1" defaultValue={spirit?.ryePct ?? ""} /></label>
-        <label>Wheat %<input name="wheatPct" type="number" min="0" max="100" step="0.1" defaultValue={spirit?.wheatPct ?? ""} /></label>
-        <label>Malted barley %<input name="maltedBarleyPct" type="number" min="0" max="100" step="0.1" defaultValue={spirit?.maltedBarleyPct ?? ""} /></label>
-        <label>Other %<input name="otherGrainPct" type="number" min="0" max="100" step="0.1" defaultValue={spirit?.otherGrainPct ?? ""} /></label>
+        <label>Corn %<input name="cornPct" type="number" min="0" max="100" step="0.1" defaultValue={draft?.cornPct ?? spirit?.cornPct ?? ""} /></label>
+        <label>Rye %<input name="ryePct" type="number" min="0" max="100" step="0.1" defaultValue={draft?.ryePct ?? spirit?.ryePct ?? ""} /></label>
+        <label>Wheat %<input name="wheatPct" type="number" min="0" max="100" step="0.1" defaultValue={draft?.wheatPct ?? spirit?.wheatPct ?? ""} /></label>
+        <label>Malted barley %<input name="maltedBarleyPct" type="number" min="0" max="100" step="0.1" defaultValue={draft?.maltedBarleyPct ?? spirit?.maltedBarleyPct ?? ""} /></label>
+        <label>Other %<input name="otherGrainPct" type="number" min="0" max="100" step="0.1" defaultValue={draft?.otherGrainPct ?? spirit?.otherGrainPct ?? ""} /></label>
       </fieldset>
       <div className="grid gap-4 md:grid-cols-2">
-        <label>Mash confidence<input name="mashBillConfidence" type="number" min="0" max="1" step="0.01" defaultValue={spirit?.mashBillConfidence ?? ""} /></label>
+        <label>Mash confidence<input name="mashBillConfidence" type="number" min="0" max="1" step="0.01" defaultValue={draft?.mashBillConfidence ?? spirit?.mashBillConfidence ?? ""} /></label>
         <label>Source confidence<input name="sourceConfidence" type="number" min="0" max="1" step="0.01" defaultValue={sourceConfidence ?? ""} /></label>
         <label className="md:col-span-2">Mash notes<textarea name="mashBillNotes" rows={3} defaultValue={draft?.mashBillNotes ?? spirit?.mashBillNotes ?? ""} /></label>
       </div>

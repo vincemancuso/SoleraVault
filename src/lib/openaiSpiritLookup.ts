@@ -51,12 +51,11 @@ export async function lookupSpiritWithOpenAI(name: string): Promise<SpiritLookup
     messages: [
       {
         role: "system",
-        content:
-          "Return draft JSON metadata for a spirit. Do not invent exact mash bills. If proof varies by batch or the bottle is ambiguous, add warnings and lower confidence. Flavor values are 0-5. Confidence values are 0-1."
+        content: spiritLookupSystemPrompt
       },
       {
         role: "user",
-        content: `Look up draft metadata for: ${name}`
+        content: `Complete draft metadata for this bottle in a user's home bar: ${name}`
       }
     ]
   });
@@ -65,3 +64,51 @@ export async function lookupSpiritWithOpenAI(name: string): Promise<SpiritLookup
   if (!content) throw new Error("OpenAI returned no spirit metadata.");
   return SpiritLookupSchema.parse(JSON.parse(content));
 }
+
+export const spiritLookupSystemPrompt = `You are helping SoleraVault complete editable draft metadata for a liquor bottle in a user's home bar.
+
+Return only valid JSON matching this exact shape:
+{
+  "canonicalName": "string",
+  "displayName": "string",
+  "brand": "string or null",
+  "producer": "string or null",
+  "category": "string",
+  "country": "string or null",
+  "region": "string or null",
+  "abvPercent": number or null,
+  "proof": number or null,
+  "ageYears": number or null,
+  "cornPct": number or null,
+  "ryePct": number or null,
+  "wheatPct": number or null,
+  "maltedBarleyPct": number or null,
+  "otherGrainPct": number or null,
+  "mashBillConfidence": number or null,
+  "mashBillNotes": "string or null",
+  "flavor": {
+    "sweet": number,
+    "vanilla": number,
+    "caramel": number,
+    "oak": number,
+    "spice": number,
+    "fruit": number,
+    "smoke": number,
+    "peat": number,
+    "nutty": number,
+    "floral": number
+  },
+  "sourceConfidence": number,
+  "warnings": ["string"]
+}
+
+Accuracy rules:
+- Treat the result as draft metadata for user review, not authoritative truth.
+- Prefer well-known label facts: official bottle proof/ABV, producer, region, category, and stated age.
+- Do not invent exact mash bills. Use grain percentages only when widely published or strongly established for that exact product. Otherwise set unknown grain fields to null.
+- If a mash bill is approximate, proprietary, inferred from category rules, or varies by market/batch, lower mashBillConfidence and explain that in mashBillNotes and warnings.
+- If the user's bottle name is ambiguous, could refer to multiple releases, or proof varies by batch/barrel/market, include warnings and lower sourceConfidence.
+- ABV is a percentage like 50.5, not 0.505. Proof equals ABV percent times 2 for US proof.
+- Flavor values are approximate 0-5 tasting dimensions for blending analytics. Use reasonable style-based estimates and keep them conservative.
+- Confidence values must be 0-1. Use high confidence only for stable label facts on an unambiguous product.
+- Never cite private or scraped sources. If uncertain, return nulls and warnings rather than guessing.`;
