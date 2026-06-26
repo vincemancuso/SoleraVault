@@ -5,22 +5,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        barrel: "#2A1810",
-        oak: "#3B2417",
-        amber: "#C47A2C",
-        gold: "#D8A24A",
-        caramel: "#B86B2B",
-        parchment: "#F7EFE2",
-        tan: "#E8D2B0",
-        copper: "#A85D32",
-        smoke: "#6F6258"
+        charcoal: "#1F2A33",
+        amber: "#D8871C",
+        lightAmber: "#F2B24A",
+        cream: "#F7F3EE",
+        slate: "#69727A",
+        border: "#E6E1D6",
+        barrel: "#1F2A33",
+        oak: "#1F2A33",
+        gold: "#F2B24A",
+        caramel: "#D8871C",
+        parchment: "#F7F3EE",
+        tan: "#E6E1D6",
+        copper: "#D8871C",
+        smoke: "#69727A"
       },
       fontFamily: {
-        sans: ["Inter", "Avenir Next", "Segoe UI", "system-ui", "sans-serif"],
-        display: ["Georgia", "Cambria", "serif"]
+        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        display: ["Manrope", "Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"]
       },
       boxShadow: {
-        vault: "0 20px 60px rgba(42, 24, 16, 0.14)"
+        vault: "0 2px 8px rgba(31, 42, 51, 0.06)"
       }
     }
   },

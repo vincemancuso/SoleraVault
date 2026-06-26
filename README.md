@@ -6,7 +6,7 @@ SoleraVault is a modern whiskey journal and analytics dashboard for at-home infi
 
 An infinity bottle is a bottle where you continually add varying amounts of spirits and periodically remove pours. SoleraVault treats the bottle as perfectly mixed: every removal proportionally reduces every current component. The full transaction ledger is the source of truth, and the app replays that ledger to calculate the current blend.
 
-![SoleraVault logo](public/brand/soleravault-logo.svg)
+![SoleraVault logo](public/brand/soleravault-logo.png)
 
 ## MVP features
 

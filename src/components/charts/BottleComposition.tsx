@@ -2,7 +2,7 @@
 
 import type { ComponentBreakdown } from "@/lib/blendMath";
 
-const palette = ["#C47A2C", "#D8A24A", "#B86B2B", "#A85D32", "#8F4F25", "#E3B96F", "#6F6258"];
+const palette = ["#D8871C", "#F2B24A", "#B96A14", "#1F2A33", "#69727A", "#E3A437", "#A65E12"];
 
 export function BottleComposition({ components }: { components: ComponentBreakdown[] }) {
   const layers = components.slice(0, 6);
@@ -20,9 +20,9 @@ export function BottleComposition({ components }: { components: ComponentBreakdo
             <path d="M68 18h44l8 78c24 18 38 48 38 82v120c0 25-20 45-45 45H67c-25 0-45-20-45-45V178c0-34 14-64 38-82l8-78Z" />
           </clipPath>
         </defs>
-        <path d="M68 18h44l8 78c24 18 38 48 38 82v120c0 25-20 45-45 45H67c-25 0-45-20-45-45V178c0-34 14-64 38-82l8-78Z" fill="#fff8ec" stroke="#2A1810" strokeWidth="8" />
+        <path d="M68 18h44l8 78c24 18 38 48 38 82v120c0 25-20 45-45 45H67c-25 0-45-20-45-45V178c0-34 14-64 38-82l8-78Z" fill="#FFFFFF" stroke="#1F2A33" strokeWidth="8" />
         <g clipPath="url(#bottleClip)">
-          <rect x="0" y="0" width="180" height="360" fill="#fff8ec" />
+          <rect x="0" y="0" width="180" height="360" fill="#FFFFFF" />
           {displayLayers.map((component, index) => {
             const height = Math.max(1, component.sharePct * 2.45);
             const y = 342 - offset - height;
@@ -33,8 +33,8 @@ export function BottleComposition({ components }: { components: ComponentBreakdo
               </rect>
             );
           })}
-          <path d="M36 230c35-34 70-34 105 0" stroke="#F8D189" strokeWidth="9" strokeLinecap="round" opacity="0.7" />
-          <path d="M36 258c35 34 70 34 105 0" stroke="#7A3E1F" strokeWidth="9" strokeLinecap="round" opacity="0.38" />
+          <path d="M36 230c35-34 70-34 105 0" stroke="#F2B24A" strokeWidth="9" strokeLinecap="round" opacity="0.78" />
+          <path d="M36 258c35 34 70 34 105 0" stroke="#1F2A33" strokeWidth="9" strokeLinecap="round" opacity="0.28" />
         </g>
       </svg>
       <div className="space-y-3">

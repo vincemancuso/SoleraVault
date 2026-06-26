@@ -38,9 +38,9 @@ export function FlavorRadar({ profile }: { profile: FlavorProfile }) {
   return (
     <ResponsiveContainer width="100%" height={320}>
       <RadarChart data={data} outerRadius={112}>
-        <PolarGrid stroke="#D7C2A4" />
-        <PolarAngleAxis dataKey="dimension" tick={{ fill: "#3B2417", fontSize: 12, fontWeight: 700 }} />
-        <Radar name="Estimated flavor" dataKey="value" stroke="#A85D32" fill="#C47A2C" fillOpacity={0.38} />
+        <PolarGrid stroke="#E6E1D6" />
+        <PolarAngleAxis dataKey="dimension" tick={{ fill: "#1F2A33", fontSize: 12, fontWeight: 700 }} />
+        <Radar name="Estimated flavor" dataKey="value" stroke="#D8871C" fill="#D8871C" fillOpacity={0.34} />
         <Tooltip />
       </RadarChart>
     </ResponsiveContainer>
@@ -57,11 +57,11 @@ export function ContributorBars({ components }: { components: ComponentBreakdown
   return (
     <ResponsiveContainer width="100%" height={Math.max(260, data.length * 44)}>
       <BarChart data={data} layout="vertical" margin={{ left: 18, right: 28 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E2CCAA" />
-        <XAxis type="number" unit="%" stroke="#6F6258" />
-        <YAxis type="category" dataKey="name" width={132} stroke="#3B2417" tick={{ fontSize: 12, fontWeight: 700 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" />
+        <XAxis type="number" unit="%" stroke="#69727A" />
+        <YAxis type="category" dataKey="name" width={132} stroke="#1F2A33" tick={{ fontSize: 12, fontWeight: 700 }} />
         <Tooltip formatter={(value, name, item) => [`${value}% (${item.payload.volume})`, "Share"]} />
-        <Bar dataKey="pct" fill="#B86B2B" radius={[0, 8, 8, 0]} />
+        <Bar dataKey="pct" fill="#D8871C" radius={[0, 8, 8, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -102,25 +102,25 @@ export function HistoryCharts({ snapshots }: { snapshots: SnapshotJson[] }) {
       <ResponsiveContainer width="100%" height={320}>
         {mode === "proof" ? (
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E2CCAA" />
-            <XAxis dataKey="date" stroke="#6F6258" />
-            <YAxis stroke="#6F6258" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" />
+            <XAxis dataKey="date" stroke="#69727A" />
+            <YAxis stroke="#69727A" />
             <Tooltip />
-            <Line type="monotone" dataKey="proof" stroke="#A85D32" strokeWidth={3} dot={{ fill: "#C47A2C" }} />
+            <Line type="monotone" dataKey="proof" stroke="#D8871C" strokeWidth={3} dot={{ fill: "#F2B24A" }} />
           </LineChart>
         ) : mode === "volume" ? (
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E2CCAA" />
-            <XAxis dataKey="date" stroke="#6F6258" />
-            <YAxis stroke="#6F6258" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" />
+            <XAxis dataKey="date" stroke="#69727A" />
+            <YAxis stroke="#69727A" />
             <Tooltip />
-            <Line type="monotone" dataKey="volumeOz" stroke="#2A1810" strokeWidth={3} dot={{ fill: "#D8A24A" }} />
+            <Line type="monotone" dataKey="volumeOz" stroke="#1F2A33" strokeWidth={3} dot={{ fill: "#D8871C" }} />
           </LineChart>
         ) : (
           <AreaChart data={categoryData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E2CCAA" />
-            <XAxis dataKey="date" stroke="#6F6258" />
-            <YAxis stroke="#6F6258" unit="%" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E6E1D6" />
+            <XAxis dataKey="date" stroke="#69727A" />
+            <YAxis stroke="#69727A" unit="%" />
             <Tooltip />
             {categories.map((category, index) => (
               <Area
@@ -128,8 +128,8 @@ export function HistoryCharts({ snapshots }: { snapshots: SnapshotJson[] }) {
                 type="monotone"
                 dataKey={category}
                 stackId="1"
-                stroke={["#C47A2C", "#D8A24A", "#A85D32", "#6F6258"][index % 4]}
-                fill={["#C47A2C", "#D8A24A", "#A85D32", "#6F6258"][index % 4]}
+                stroke={["#D8871C", "#F2B24A", "#1F2A33", "#69727A"][index % 4]}
+                fill={["#D8871C", "#F2B24A", "#1F2A33", "#69727A"][index % 4]}
               />
             ))}
           </AreaChart>

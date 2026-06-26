@@ -2,14 +2,12 @@ export const brand = {
   name: "SoleraVault",
   tagline: "Track. Blend. Drink. Share.",
   colors: {
-    barrel: "#2A1810",
-    oak: "#3B2417",
-    amber: "#C47A2C",
-    gold: "#D8A24A",
-    caramel: "#B86B2B",
-    parchment: "#F7EFE2",
-    tan: "#E8D2B0",
-    copper: "#A85D32",
-    smoke: "#6F6258"
+    charcoal: "#1F2A33",
+    amber: "#D8871C",
+    lightAmber: "#F2B24A",
+    cream: "#F7F3EE",
+    slate: "#69727A",
+    border: "#E6E1D6",
+    white: "#FFFFFF"
   }
 };
