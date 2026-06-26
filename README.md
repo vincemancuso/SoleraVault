@@ -67,13 +67,23 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/soleravault?schema=p
 OPENAI_API_KEY=""
 ```
 
-3. Start PostgreSQL:
+3. Start PostgreSQL.
+
+If Docker is installed, use:
 
 ```bash
 npm run db:start
 ```
 
 This uses Docker Compose and exposes Postgres on `localhost:5432`.
+
+If Docker is not installed, use the project-local Homebrew/Postgres helper instead:
+
+```bash
+npm run db:local
+```
+
+That starts an isolated local Postgres data directory at `.postgres-data`, exposes it on `localhost:55432`, creates the `soleravault` database, and updates `.env` automatically.
 
 4. Create the database tables:
 
@@ -108,6 +118,17 @@ If you see `Can't reach database server at localhost:5432`, the app is running b
 ```bash
 npm run db:start
 ```
+
+If you see `password authentication failed for user "postgres"`, you are reaching a different local Postgres server whose password does not match `.env`. The easiest fix is:
+
+```bash
+npm run db:local
+npm run prisma:migrate
+npm run prisma:seed
+npm run dev
+```
+
+Then make sure `.env` uses the generated `localhost:55432` URL.
 
 Then run migrations and seed data:
 

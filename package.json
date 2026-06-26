@@ -11,6 +11,8 @@
     "test:watch": "vitest",
     "db:start": "docker compose up -d postgres",
     "db:stop": "docker compose down",
+    "db:local": "node scripts/local-postgres.mjs start",
+    "db:local:stop": "node scripts/local-postgres.mjs stop",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts"
