@@ -1,4 +1,3 @@
-import OpenAI from "openai";
 import { z } from "zod";
 
 export const spiritLookupEnabled = Boolean(process.env.OPENAI_API_KEY);
@@ -39,28 +38,50 @@ export const SpiritLookupSchema = z.object({
 
 export type SpiritLookupDraft = z.infer<typeof SpiritLookupSchema>;
 
+type OpenAIChatCompletionResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string | null;
+    };
+  }>;
+  error?: {
+    message?: string;
+  };
+};
+
 export async function lookupSpiritWithOpenAI(name: string): Promise<SpiritLookupDraft> {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY is not configured.");
   }
 
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    response_format: { type: "json_object" },
-    messages: [
-      {
-        role: "system",
-        content: spiritLookupSystemPrompt
-      },
-      {
-        role: "user",
-        content: `Complete draft metadata for this bottle in a user's home bar: ${name}`
-      }
-    ]
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: spiritLookupSystemPrompt
+        },
+        {
+          role: "user",
+          content: `Complete draft metadata for this bottle in a user's home bar: ${name}`
+        }
+      ]
+    })
   });
 
-  const content = response.choices[0]?.message.content;
+  const json = (await response.json()) as OpenAIChatCompletionResponse;
+  if (!response.ok) {
+    throw new Error(json.error?.message ?? "OpenAI spirit lookup failed.");
+  }
+
+  const content = json.choices?.[0]?.message?.content;
   if (!content) throw new Error("OpenAI returned no spirit metadata.");
   return SpiritLookupSchema.parse(JSON.parse(content));
 }
